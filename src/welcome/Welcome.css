@@ -1,0 +1,159 @@
+.welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h1, h2 {
+        margin-top: 10px;
+        margin-bottom: -10px;
+    }
+
+    button.generic-button {
+        height: 35px;
+        font-size: 18px;
+        font-weight: bold;
+
+        border-radius: 10px;
+        border-color: transparent;
+        
+        background-color: #db413b;
+
+        transition:
+            transform 0.1s ease-in-out,
+            background-color 0.2s ease-out,
+            box-shadow 0.22s ease-out;
+    }
+
+    button.generic-button:hover {
+        background-color: rgb(172, 0, 0);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(10, 10, 10, 0.2);
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    --gap: 20px;
+}
+
+.welcome-box {
+    position: relative;
+    
+    background-image: linear-gradient(to bottom, #f4f4f4, #e4e4e4);
+    width: min(550px, calc(100vw - 50px));
+    height: 500px;
+    border-radius: 12px;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap);
+
+    color: #111;
+
+    h3 {
+        margin: 0;
+    }
+}
+
+.welcome-inner-box {
+    width: min(400px, calc(100% - 70px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap);
+}
+
+.welcome-choices {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+
+    gap: 16px;
+}
+
+.welcome-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    text-align: left;
+
+    span {
+        color: #777;
+    }
+
+    .welcome-input-box-group {
+        width: 100%;
+        height: 30px;
+        border-radius: 8px;
+        background-color: #ddd;
+        border: 2px dashed rgba(10, 10, 10, 0.1);
+        color: #111;
+        position: relative;
+
+        display: flex;
+        flex-direction: row;
+
+        button.welcome-password-visiblity {
+            background-color: transparent;
+            border: none;
+            position: absolute;
+            right: 0;
+            width: 70px;
+            text-align: center;
+            color: #3c0000;
+            vertical-align: middle;
+            height: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            padding-right: 8px;
+        }
+    }
+
+    .welcome-input-box {
+        width: calc(100% - 70px);
+        height: 100%;
+        background-color: transparent;
+        border: transparent;
+        color: #111;
+        font-size: 18px;
+    }
+}
+
+.welcome-back {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    padding-left: 30px;
+    top: 10px;
+    position: absolute;
+
+    button {
+        background-color: #111;
+    }
+}
+
+.welcome-error {
+    background-color: #ffcccc;
+    width: 100%;
+    text-align: left;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    
+    border-radius: 8px;
+    border-style: dashed;
+    border-color: #ffa9a6;
+    color: #d33;
+
+    img {
+        width: 24px;
+    }
+}
