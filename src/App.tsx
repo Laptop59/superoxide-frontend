@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 
-import Welcome from './welcome';
-import Toolbox from './toolbox';
+import Welcome from './components/welcome';
+import Toolbox from './components/toolbox';
 
 function App() {
     return (

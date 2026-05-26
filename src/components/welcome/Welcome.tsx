@@ -1,8 +1,10 @@
 import { useRef, useState } from 'react';
 import './Welcome.css';
 
-import errorIcon from '../assets/error_icon.svg';
+import errorIcon from '../../assets/error_icon.svg';
 import Button from '../ui/Button';
+import { PasswordField } from '../ui';
+import TextField from '../ui/TextField';
 
 const WelcomeComponents = {
     empty: Empty,
@@ -49,12 +51,8 @@ function Empty({ setState }: WelcomeProps) {
 function Register({ setState }: WelcomeProps) {
     let [error, setError] = useState<string | null>(null);
 
-    let [showPassword, setShowPassword] = useState<boolean>(false);
-    let [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
     return (
         <>
@@ -69,51 +67,16 @@ function Register({ setState }: WelcomeProps) {
                         <span>{error}</span>
                     </div>
                 }
-                <div className='welcome-field'>
-                    <span>Username</span>
-                    <div className='welcome-input-box-group'>
-                        <input
-                            placeholder="Enter your desired username..."
-                            type='text'
-                            className='welcome-input-box'
-                            ref={usernameRef}
-                        />
-                    </div>
-                </div>
-                <div className='welcome-field'>
-                    <span>Password</span>
-                    <div className='welcome-input-box-group'>
-                        <input
-                            placeholder="Enter the password you want to use..."
-                            type={showPassword ? 'text' : 'password'}
-                            className='welcome-input-box'
-                            ref={passwordRef}
-                        />
-                        <button
-                            onClick={() => setShowPassword(!showPassword)}
-                            className='welcome-password-visiblity'
-                        >
-                            {showPassword ? 'HIDE' : 'SHOW'}
-                        </button>
-                    </div>
-                </div>
-                <div className='welcome-field'>
-                    <span>Confirm Password</span>
-                    <div className='welcome-input-box-group'>
-                        <input
-                            placeholder="Confirm your password..."
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            className='welcome-input-box'
-                            ref={confirmPasswordRef}
-                        />
-                        <button
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className='welcome-password-visiblity'
-                        >
-                            {showConfirmPassword ? 'HIDE' : 'SHOW'}
-                        </button>
-                    </div>
-                </div>
+                <TextField
+                    title="Username"
+                    placeholder="user123"
+                    ref={usernameRef}
+                />
+                <PasswordField
+                    title="Password"
+                    placeholder="Create a strong password..."
+                    ref={passwordRef}
+                />
                 <Button onClick={onRegisterClick}>Create Account</Button>
             </div>
         </>
@@ -135,7 +98,6 @@ function Register({ setState }: WelcomeProps) {
     function register() {
         const username = usernameRef.current?.value.trim();
         const password = passwordRef.current?.value;
-        const confirmPassword = confirmPasswordRef.current?.value;
 
         if (!username) {
             throw Error("Please enter a username.");
@@ -143,14 +105,16 @@ function Register({ setState }: WelcomeProps) {
         if (!password) {
             throw Error("Please enter a password.");
         }
-        if (password !== confirmPassword) {
-            throw Error("Passwords do not match.");
-        }
         // TODO
     }
 }
 
 function Login({ setState }: WelcomeProps) {
+    let [error, setError] = useState<string | null>(null);
+
+    const usernameRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
+    
     return (
         <>
             <div className='welcome-back'>
@@ -158,14 +122,16 @@ function Login({ setState }: WelcomeProps) {
             </div>
             <div className='welcome-inner-box'>
                 <h3>Welcome back! Let's sign in your account!</h3>
-                <div className='welcome-field'>
-                    <span>Username</span>
-                    <input type='text' className='welcome-input-box'></input>
-                </div>
-                <div className='welcome-field'>
-                    <span>Password</span>
-                    <input type='password' className='welcome-input-box'></input>
-                </div>
+                <TextField
+                    title="Username"
+                    placeholder="user123"
+                    ref={usernameRef}
+                />
+                <PasswordField
+                    title="Password"
+                    placeholder="Create a strong password..."
+                    ref={passwordRef}
+                />
                 <Button onClick={() => { }}>Sign In</Button>
             </div>
         </>

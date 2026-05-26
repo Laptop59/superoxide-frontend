@@ -1,7 +1,6 @@
-import type { MouseEventHandler } from "react";
+import "./Button.css";
 
-type ButtonProps = {
-    onClick: MouseEventHandler<HTMLButtonElement>,
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     children: React.ReactNode
 }
 
@@ -11,12 +10,12 @@ type ButtonProps = {
  * @returns The constructed button.
  */
 function Button({
-    onClick,
-    children
-}: ButtonProps) {
+    children,
+    ...props
+}: Props) {
     return <button
-        onClick={onClick}
         className='generic-button'
+        {...props}
     >
         {children}
     </button>;

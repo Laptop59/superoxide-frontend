@@ -1,0 +1,25 @@
+button.generic-button {
+    height: 35px;
+    font-size: 18px;
+    font-weight: bold;
+
+    border-radius: 10px;
+    border-color: transparent;
+    
+    background-color: #db413b;
+
+    transition:
+        transform 0.1s ease-in-out,
+        background-color 0.2s ease-out,
+        box-shadow 0.22s ease-out;
+}
+
+button.generic-button:hover {
+    background-color: rgb(172, 0, 0);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(10, 10, 10, 0.2);
+}
+
+button:hover {
+    cursor: pointer;
+}
