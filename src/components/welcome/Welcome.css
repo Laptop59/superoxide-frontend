@@ -82,3 +82,13 @@
         width: 24px;
     }
 }
+
+.text-field {
+    span.welcome-username-availability-negative {
+        color: #833;
+    }
+
+    span.welcome-username-availability-positive {
+        color: #383;
+    }
+}

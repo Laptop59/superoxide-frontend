@@ -5,6 +5,7 @@ import errorIcon from '../../assets/error_icon.svg';
 import Button from '../ui/Button';
 import { PasswordField } from '../ui';
 import TextField from '../ui/TextField';
+import { fetchUsernameAvailability, type UsernameAvailability } from '../../api';
 
 const WelcomeComponents = {
     empty: Empty,
@@ -54,6 +55,8 @@ function Register({ setState }: WelcomeProps) {
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
+    const [usernameAvailability, setUsernameAvailability] = useState<UsernameAvailability | null>();
+
     return (
         <>
             <div className='welcome-back'>
@@ -71,6 +74,19 @@ function Register({ setState }: WelcomeProps) {
                     title="Username"
                     placeholder="user123"
                     ref={usernameRef}
+                    header={usernameAvailability && renderUsernameAvailability(usernameAvailability)}
+                    onBlur={async e => {
+                        setUsernameAvailability(null);
+                        const username = e.target.value;
+                        if (username)
+                            try {
+                                const response = await fetchUsernameAvailability(e.target.value);
+                                setUsernameAvailability(response);
+                            } catch(e) {
+                                console.error("Could not determine username availability:", e);
+                            }
+                    }}
+                    onChange={() => setUsernameAvailability(null)}
                 />
                 <PasswordField
                     title="Password"
@@ -106,6 +122,45 @@ function Register({ setState }: WelcomeProps) {
             throw Error("Please enter a password.");
         }
         // TODO
+    }
+
+    function renderUsernameAvailability(availability: UsernameAvailability) {
+        const isPositive = availability.status == "available";
+        const className = `welcome-username-availability-${isPositive ? "positive" : "negative"}`;
+
+        let text = "";
+
+        switch (availability.status) {
+            case "available":
+                text = "Username is available";
+                break;
+
+            case "already_taken":
+                text = "Username is already taken";
+                break;
+
+            case "invalid":
+                switch (availability.reason) {
+                    case "too_short":
+                        text = "Username is too short";
+                        break;
+
+                    case "too_long":
+                        text = "Username is too long";
+                        break;
+
+                    case "contains_spaces":
+                        text = "Username cannot contain spaces";
+                        break;
+
+                    case "invalid_characters":
+                        text = "Username contains invalid characters";
+                        break;
+                }
+                break;
+        }
+
+        return <span className={className}>{text}</span>;
     }
 }
 
