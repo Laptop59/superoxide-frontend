@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
 import './Welcome.css';
 
-import errorIcon from '../../assets/error_icon.svg';
-import Button from '../ui/Button';
-import { PasswordField } from '../ui';
-import TextField from '../ui/TextField';
-import { fetchUsernameAvailability, type UsernameAvailability } from '../../api';
+import Button from '../../components/ui/Button';
+import { PasswordField } from '../../components/ui';
+import TextField from '../../components/ui/TextField';
+import { fetchUsernameAvailability, loginAccount, registerAccount, type UsernameAvailability } from '../../api';
+import Requirements from '../../components/requirements';
+import ErrorModal from '../../components/ui/ErrorModal';
 
 const WelcomeComponents = {
     empty: Empty,
@@ -26,10 +27,10 @@ function Welcome() {
 
     return (
         <>
-            <div className='welcome'>
+            <div className='auth'>
                 <h1>Welcome! We're so excited to see you here!</h1>
                 <h3>All you need to do is to get into an account!</h3>
-                <div className='welcome-box'>
+                <div className='auth-box'>
                     <WelcomeComponent setState={setState} />
                 </div>
             </div>
@@ -41,7 +42,7 @@ function Empty({ setState }: WelcomeProps) {
     return (
         <>
             <h3>Choose a method:</h3>
-            <div className='welcome-choices'>
+            <div className='auth-choices'>
                 <Button onClick={() => setState("register")}>Register</Button>
                 <Button onClick={() => setState("login")}>Login</Button>
             </div>
@@ -50,31 +51,31 @@ function Empty({ setState }: WelcomeProps) {
 }
 
 function Register({ setState }: WelcomeProps) {
-    let [error, setError] = useState<string | null>(null);
+    let [error, setError] = useState<unknown>(null);
 
     const usernameRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
 
     const [usernameAvailability, setUsernameAvailability] = useState<UsernameAvailability | null>();
 
+    const [password, setPassword] = useState<string>("");
+    const [passwordAllowed, setPasswordAllowed] = useState<boolean>(false);
+    const [submitting, setSubmitting] = useState<boolean>(false);
+
     return (
         <>
-            <div className='welcome-back'>
+            <div className='auth-back'>
                 <Button onClick={() => setState("empty")}>← Go Back</Button>
             </div>
-            <div className='welcome-inner-box'>
+            <div className='auth-inner-box'>
                 <h3>Let's create an account!</h3>
-                {
-                    error && <div className='welcome-error'>
-                        <img src={errorIcon} />
-                        <span>{error}</span>
-                    </div>
-                }
+                <ErrorModal error={error}/>
                 <TextField
                     title="Username"
                     placeholder="user123"
                     ref={usernameRef}
                     header={usernameAvailability && renderUsernameAvailability(usernameAvailability)}
+
+                    // When defocused
                     onBlur={async e => {
                         setUsernameAvailability(null);
                         const username = e.target.value;
@@ -84,49 +85,74 @@ function Register({ setState }: WelcomeProps) {
                                 setUsernameAvailability(response);
                             } catch(e) {
                                 console.error("Could not determine username availability:", e);
+                                setUsernameAvailability({ status: "could_not_ask_server" });
                             }
                     }}
+
                     onChange={() => setUsernameAvailability(null)}
                 />
                 <PasswordField
                     title="Password"
                     placeholder="Create a strong password..."
-                    ref={passwordRef}
+                    onChange={e => setPassword(e.target.value)}
+                    maxLength={256}
                 />
-                <Button onClick={onRegisterClick}>Create Account</Button>
+                <Requirements
+                    title="Your password must:"
+                    state={password}
+                    requirements={[
+                        {
+                            text: "be at least 12 characters long.",
+                            criterion: password => password.length >= 12
+                        }
+                    ]}
+                    onRequirementChange={setPasswordAllowed}
+                />
+                <Button
+                    onClick={() => onRegisterClick(usernameAvailability, passwordAllowed)}
+                    disabled={submitting}
+                >Create Account</Button>
             </div>
         </>
     );
 
-    function onRegisterClick() {
+    async function onRegisterClick(usernameAvailability: UsernameAvailability | null | undefined, passwordAllowed: boolean) {
+        setSubmitting(true);
         try {
-            register();
             setError(null);
+            await register(usernameAvailability, passwordAllowed);
         } catch (e) {
-            if (e instanceof Error) {
-                setError(e.message);
-            } else {
-                setError(String(e));
-            }
+            setError(e);
+        } finally {
+            setSubmitting(false);
         }
     }
 
-    function register() {
+    async function register(usernameAvailability: UsernameAvailability | null | undefined, passwordAllowed: boolean) {
         const username = usernameRef.current?.value.trim();
-        const password = passwordRef.current?.value;
 
         if (!username) {
             throw Error("Please enter a username.");
         }
+
+        if (usernameAvailability?.status != "available")
+            throw Error("Please check your username status.");
+
         if (!password) {
             throw Error("Please enter a password.");
         }
-        // TODO
+
+        if (!passwordAllowed) {
+            throw Error("Your password must satisfy all the given requirements for it.");
+        }
+
+        await registerAccount(username, password);
+        alert("Nice job!");
     }
 
     function renderUsernameAvailability(availability: UsernameAvailability) {
         const isPositive = availability.status == "available";
-        const className = `welcome-username-availability-${isPositive ? "positive" : "negative"}`;
+        const className = `auth-username-availability-${isPositive ? "positive" : "negative"}`;
 
         let text = "";
 
@@ -137,6 +163,10 @@ function Register({ setState }: WelcomeProps) {
 
             case "already_taken":
                 text = "Username is already taken";
+                break;
+
+            case "could_not_ask_server":
+                text = "Server cannot be reached to verify";
                 break;
 
             case "invalid":
@@ -165,18 +195,20 @@ function Register({ setState }: WelcomeProps) {
 }
 
 function Login({ setState }: WelcomeProps) {
-    let [error, setError] = useState<string | null>(null);
+    let [error, setError] = useState<unknown>(null);
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const [submitting, setSubmitting] = useState<boolean>(false);
     
     return (
         <>
-            <div className='welcome-back'>
+            <div className='auth-back'>
                 <Button onClick={() => setState("empty")}>← Go Back</Button>
             </div>
-            <div className='welcome-inner-box'>
+            <div className='auth-inner-box'>
                 <h3>Welcome back! Let's sign in your account!</h3>
+                <ErrorModal error={error}/>
                 <TextField
                     title="Username"
                     placeholder="user123"
@@ -187,10 +219,41 @@ function Login({ setState }: WelcomeProps) {
                     placeholder="Create a strong password..."
                     ref={passwordRef}
                 />
-                <Button onClick={() => { }}>Sign In</Button>
+                <Button
+                    onClick={onLoginClick}
+                    disabled={submitting}
+                >Login</Button>
             </div>
         </>
     );
+
+    async function onLoginClick() {
+        setSubmitting(true);
+        try {
+            setError(null);
+            await login();
+        } catch (e) {
+            setError(e);
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    async function login() {
+        const username = usernameRef.current?.value.trim();
+        const password = passwordRef.current?.value.trim();
+
+        if (!username) {
+            throw Error("Please enter a username.");
+        }
+
+        if (!password) {
+            throw Error("Please enter a password.");
+        }
+
+        await loginAccount(username, password);
+        alert("Nice job!");
+    }
 }
 
 export default Welcome;

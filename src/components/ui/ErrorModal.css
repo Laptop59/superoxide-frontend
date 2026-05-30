@@ -1,0 +1,18 @@
+.error-modal {
+    background-color: #ffcccc;
+    width: 100%;
+    text-align: left;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    
+    border-radius: 8px;
+    border-style: dashed;
+    border-color: #ffa9a6;
+    color: #d33;
+
+    img {
+        width: 24px;
+    }
+}

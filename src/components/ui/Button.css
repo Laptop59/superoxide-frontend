@@ -2,6 +2,7 @@ button.generic-button {
     height: 35px;
     font-size: 18px;
     font-weight: bold;
+    color: white;
 
     border-radius: 10px;
     border-color: transparent;
@@ -11,13 +12,20 @@ button.generic-button {
     transition:
         transform 0.1s ease-in-out,
         background-color 0.2s ease-out,
-        box-shadow 0.22s ease-out;
+        box-shadow 0.22s ease-out,
+        color 0.2s ease-out;
 }
 
 button.generic-button:hover {
     background-color: rgb(172, 0, 0);
     transform: translateY(-1px);
     box-shadow: 0 3px 10px rgba(10, 10, 10, 0.2);
+}
+
+button.generic-button:disabled {
+    background-color: #888;
+    color: #333;
+    cursor: not-allowed;
 }
 
 button:hover {

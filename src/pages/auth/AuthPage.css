@@ -1,4 +1,4 @@
-.welcome {
+.auth {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,12 +11,12 @@
     --gap: 20px;
 }
 
-.welcome-box {
+.auth-box {
     position: relative;
     
     background-image: linear-gradient(to bottom, #f4f4f4, #e4e4e4);
     width: min(550px, calc(100vw - 50px));
-    height: 500px;
+    height: 550px;
     border-radius: 12px;
     text-align: center;
 
@@ -33,7 +33,7 @@
     }
 }
 
-.welcome-inner-box {
+.auth-inner-box {
     width: min(400px, calc(100% - 70px));
     display: flex;
     flex-direction: column;
@@ -42,7 +42,7 @@
     gap: var(--gap);
 }
 
-.welcome-choices {
+.auth-choices {
     display: flex;
     flex-direction: column;
     width: 200px;
@@ -50,7 +50,7 @@
     gap: 16px;
 }
 
-.welcome-back {
+.auth-back {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -64,31 +64,12 @@
     }
 }
 
-.welcome-error {
-    background-color: #ffcccc;
-    width: 100%;
-    text-align: left;
-    padding: 5px;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    
-    border-radius: 8px;
-    border-style: dashed;
-    border-color: #ffa9a6;
-    color: #d33;
-
-    img {
-        width: 24px;
-    }
-}
-
 .text-field {
-    span.welcome-username-availability-negative {
+    span.auth-username-availability-negative {
         color: #833;
     }
 
-    span.welcome-username-availability-positive {
+    span.auth-username-availability-positive {
         color: #383;
     }
 }

@@ -1,15 +1,17 @@
-import { useState } from 'react'
 import './App.css'
+import { Routes, Route } from "react-router-dom";
 
-import Welcome from './components/welcome';
+import AuthPage from './pages/auth';
 import Toolbox from './components/toolbox';
 
 function App() {
     return (
         <>
             <Toolbox/>
-            <div className='content'>
-                <Welcome/>
+            <div className='page'>
+                <Routes>
+                    <Route path="/auth" element={ <AuthPage /> }/>
+                </Routes>
             </div>
         </>
     )
