@@ -4,10 +4,14 @@ import './AuthPage.css';
 import Button from '../../components/ui/Button';
 import { PasswordField } from '../../components/ui';
 import TextField from '../../components/ui/TextField';
-import { fetchUsernameAvailability, loginAccount, registerAccount, type UsernameAvailability } from '../../api';
+import { fetchUsernameAvailability, loginAccount, registerAccount, type UserDetails, type UsernameAvailability } from '../../api';
 import Requirements from '../../components/requirements';
 import ErrorModal from '../../components/ui/ErrorModal';
 import { useNavigate } from 'react-router-dom';
+
+type Props = {
+    setUser: (user: UserDetails | undefined) => void
+};
 
 const AuthComponents = {
     empty: Empty,
@@ -20,9 +24,12 @@ type AuthState = keyof typeof AuthComponents;
 
 type AuthProps = {
     setState: (state: AuthState) => void
+    setUser: (user: UserDetails | undefined) => void
 };
 
-function AuthPage() {
+function AuthPage({
+    setUser
+}: Props) {
     let [state, setState] = useState<AuthState>("empty");
 
     const AuthComponent = AuthComponents[state];
@@ -39,7 +46,7 @@ function AuthPage() {
             <h1>Welcome! We're so excited to see you here!</h1>
             <h3>All you need to do is to get into an account!</h3>
             <div className='auth-box'>
-                <AuthComponent setState={setState} />
+                <AuthComponent setState={setState} setUser={setUser}/>
             </div>
         </div>
     );
@@ -66,7 +73,10 @@ function Done() {
     );
 }
 
-function Register({ setState }: AuthProps) {
+function Register({
+    setState,
+    setUser
+}: AuthProps) {
     let [error, setError] = useState<unknown>(null);
 
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -162,7 +172,7 @@ function Register({ setState }: AuthProps) {
             throw Error("Your password must satisfy all the given requirements for it.");
         }
 
-        await registerAccount(username, password);
+        setUser(await registerAccount(username, password));
         setState("done");
     }
 
@@ -174,33 +184,33 @@ function Register({ setState }: AuthProps) {
 
         switch (availability.status) {
             case "available":
-                text = "Username is available";
+                text = "Available";
                 break;
 
             case "already_taken":
-                text = "Username is already taken";
+                text = "Already taken";
                 break;
 
             case "could_not_ask_server":
-                text = "Server cannot be reached to verify";
+                text = "Cannot verify";
                 break;
 
             case "invalid":
                 switch (availability.reason) {
                     case "too_short":
-                        text = "Username is too short";
+                        text = "Too short";
                         break;
 
                     case "too_long":
-                        text = "Username is too long";
+                        text = "Too long";
                         break;
 
                     case "contains_spaces":
-                        text = "Username cannot contain spaces";
+                        text = "Contains spaces";
                         break;
 
                     case "invalid_characters":
-                        text = "Username contains invalid characters";
+                        text = "Contains invalid characters";
                         break;
                 }
                 break;
@@ -210,7 +220,10 @@ function Register({ setState }: AuthProps) {
     }
 }
 
-function Login({ setState }: AuthProps) {
+function Login({
+    setState,
+    setUser
+}: AuthProps) {
     let [error, setError] = useState<unknown>(null);
 
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -267,7 +280,7 @@ function Login({ setState }: AuthProps) {
             throw Error("Please enter a password.");
         }
 
-        await loginAccount(username, password);
+        setUser(await loginAccount(username, password));
         setState("done");
     }
 }

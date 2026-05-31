@@ -1,0 +1,74 @@
+.toolbar {
+    height: 80px;
+    background-image: linear-gradient(to right, #422, #411);
+    vertical-align: middle;
+    align-items: center;
+    padding-left: 10px;
+    display: flex;
+    padding: 0 10px;
+}
+
+.toolbar-compressible {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    /** Make this element take the rest of the space. */
+    flex: 1;
+}
+
+.toolbar-tabs, .toolbar-left, .toolbar-right {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.logo {
+    display: inline-block;
+    width: 120px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: transparent;
+    background-color: transparent;
+
+    img {
+        height: 55px;
+
+        object-fit: contain;
+
+        transition:
+            height 0.1s;
+    }
+}
+
+.logo:hover {
+    img {
+        height: 60px;
+    }
+}
+
+.toolbar-tab {
+    height: 100%;
+    font-size: 20px;
+    font-weight: 700;
+    min-width: 100px;
+    padding: 0 10px;
+
+    border: transparent;
+    background-color: transparent;
+}
+
+.toolbar-tab:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .toolbar-left {
+        width: 100%;
+        align-items: center;
+        flex-direction: column;
+    }
+}

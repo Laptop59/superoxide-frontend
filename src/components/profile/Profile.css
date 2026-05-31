@@ -1,0 +1,28 @@
+.profile {
+    height: 64px;
+    display: flex;
+    align-content: center;
+    flex-direction: row;
+
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 6px;
+    border: transparent;
+
+    .profile-username {
+        height: 100%;
+        vertical-align: middle;
+        padding: 8px;
+        font-size: 22px;
+        font-weight: 500;
+        text-wrap-mode: nowrap;
+    }
+    .profile-picture {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+
+        /* Make the image circular */
+        border-radius: 5px;
+    }
+}

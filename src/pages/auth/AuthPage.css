@@ -16,7 +16,7 @@
     
     background-image: linear-gradient(to bottom, #f4f4f4, #e4e4e4);
     width: min(550px, calc(100vw - 50px));
-    height: 550px;
+    min-height: 510px;
     border-radius: 12px;
     text-align: center;
 

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080";
+const API_URL = "api";
 
 /// Used for errors usually.
 const ERRORED_STATUS_MAP: Record<string, string> = {
@@ -37,6 +37,10 @@ type UsernameAvailability =
     { status: "could_not_ask_server" } |
     { status: "invalid", reason: "too_short" | "too_long" | "invalid_characters" | "contains_spaces" };
 
+interface UserDetails {
+    username: string
+}
+
 async function fetchUsernameAvailability(username: string): Promise<UsernameAvailability> {
     const response = await fetch(`${API_URL}/accounts/username-availability?username=${encodeURIComponent(username)}`);
 
@@ -46,13 +50,13 @@ async function fetchUsernameAvailability(username: string): Promise<UsernameAvai
     } catch(e) {}
 
     if (response.ok) {
-        return json as UsernameAvailability;
+        return json;
     } else {
         throw new ApiError(response.status, json);
     }
 }
 
-async function registerAccount(username: string, password: string): Promise<void> {
+async function registerAccount(username: string, password: string): Promise<UserDetails> {
     const response = await fetch(`${API_URL}/accounts/register`, {
         method: "POST",
         headers: {
@@ -69,12 +73,14 @@ async function registerAccount(username: string, password: string): Promise<void
         json = await response.json();
     } catch(e) {}
 
-    if (!response.ok) {
+    if (response.ok) {
+        return json.user as UserDetails;
+    } else {
         throw new ApiError(response.status, json);
     }
 }
 
-async function loginAccount(username: string, password: string): Promise<void> {
+async function loginAccount(username: string, password: string): Promise<UserDetails> {
     const response = await fetch(`${API_URL}/accounts/login`, {
         method: "POST",
         headers: {
@@ -91,18 +97,39 @@ async function loginAccount(username: string, password: string): Promise<void> {
         json = await response.json();
     } catch(e) {}
 
-    if (!response.ok) {
+    if (response.ok) {
+        return json.user as UserDetails;
+    } else {
+        throw new ApiError(response.status, json);
+    }
+}
+
+async function me(): Promise<UserDetails> {
+    const response = await fetch(`${API_URL}/me`, {
+        credentials: "include"
+    });
+
+    let json: any = "Invalid JSON was sent by the server";
+    try {
+        json = await response.json();
+    } catch(e) {}
+
+    if (response.ok) {
+        return json;
+    } else {
         throw new ApiError(response.status, json);
     }
 }
 
 export type {
-    UsernameAvailability
+    UsernameAvailability,
+    UserDetails
 };
 
 export {
     ApiError,
     fetchUsernameAvailability,
     registerAccount,
-    loginAccount
+    loginAccount,
+    me
 };
