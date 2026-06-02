@@ -26,7 +26,10 @@ function App() {
 
     return (
         <>
-            <Toolbar user={user}/>
+            <Toolbar
+                user={user}
+                signOutUser={() => alert("TODO")}
+            />
             <div className='page'>
                 {!loading && <FrontendRoutes setUser={setUser}/>}
             </div>

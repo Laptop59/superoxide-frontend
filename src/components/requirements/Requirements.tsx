@@ -34,7 +34,9 @@ function Requirement<S>({
                 const isSatisfied = requirement.criterion(state);
                 const image = isSatisfied ? satisfiedImage : unsatisfiedImage;
 
-                return <div key={i} className={`requirements-requirement${isSatisfied ? " requirements-satisfied" : ""}`}>
+                return <div
+                    key={i} className={`requirements-requirement${isSatisfied ? " requirements-satisfied" : ""}`}
+                    >
                     <img src={image}/>
                     <span>{requirement.text}</span>
                 </div>;
