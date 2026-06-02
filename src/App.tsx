@@ -2,7 +2,7 @@ import './App.css'
 import { Routes, Route } from "react-router-dom";
 
 import AuthPage from './pages/auth';
-import Toolbox from './components/toolbox';
+import Toolbar from './components/toolbar';
 import { useEffect, useState } from 'react';
 import { me, type UserDetails } from './api';
 
@@ -13,7 +13,7 @@ function App() {
     useEffect(() => {
         async function fetch() {
             try {
-                await me();
+                setUser(await me());
             } catch(e) {
                 console.error("Could not fetch user details:", e);
             } finally {
@@ -26,7 +26,7 @@ function App() {
 
     return (
         <>
-            <Toolbox user={user}/>
+            <Toolbar user={user}/>
             <div className='page'>
                 {!loading && <FrontendRoutes setUser={setUser}/>}
             </div>
