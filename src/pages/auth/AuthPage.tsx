@@ -102,7 +102,7 @@ function Register({
                     header={usernameAvailability && renderUsernameAvailability(usernameAvailability)}
 
                     // When defocused
-                    onBlur={async e => {
+                    onChange={async e => {
                         setUsernameAvailability(null);
                         const username = e.target.value;
                         if (username)
@@ -114,8 +114,6 @@ function Register({
                                 setUsernameAvailability({ status: "could_not_ask_server" });
                             }
                     }}
-
-                    onChange={() => setUsernameAvailability(null)}
                 />
                 <PasswordField
                     title="Password"

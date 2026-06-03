@@ -104,6 +104,20 @@ async function loginAccount(username: string, password: string): Promise<UserDet
     }
 }
 
+async function signOutAccount(): Promise<void> {
+    const response = await fetch(`${API_URL}/accounts/sign-out`, {
+        method: "DELETE"
+    });
+
+    let json: any = "Invalid JSON was sent by the server";
+    try {
+        json = await response.json();
+    } catch(e) {}
+
+    if (!response.ok)
+        throw new ApiError(response.status, json);
+}
+
 async function me(): Promise<UserDetails> {
     const response = await fetch(`${API_URL}/me`, {
         credentials: "include"
@@ -131,5 +145,6 @@ export {
     fetchUsernameAvailability,
     registerAccount,
     loginAccount,
+    signOutAccount,
     me
 };

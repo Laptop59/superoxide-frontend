@@ -1,12 +1,13 @@
 import "./Toolbar.css";
 
 import type { UserDetails } from '../../api';
-import logo from '../../assets/logo.svg';
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
 import Profile from "../profile";
 
-import { CSSTransition } from "react-transition-group";
+import LeftToolbar from "./LeftToolbar";
+import RightToolbar from "./RightToolbar";
+import Tab from "./Tab";
+import ToolbarPopup from "./ToolbarPopup";
 
 type Props = {
     user?: UserDetails
@@ -64,173 +65,23 @@ function Toolbar({
                     }
                 </div>
             </div>
-            <LeftToolbarPopup
+            <ToolbarPopup
+                className="toolbar-left-popup"
                 show={showLeftToolbarPopup}
                 setShow={setShowLeftToolbarPopup}
                 origin={menuButtonRef}
-            />
-            <RightToolbarPopup
+            >
+                <LeftToolbar />
+            </ToolbarPopup>
+            <ToolbarPopup
+                className="toolbar-right-popup"
                 show={showRightToolbarPopup}
                 setShow={setShowRightToolbarPopup}
                 origin={profileRef}
-                signOutUser={signOutUser}
-            />
+            >
+                <RightToolbar signOutUser={signOutUser} />
+            </ToolbarPopup>
         </div>
-    );
-}
-
-type PopupProps = {
-    show: boolean,
-    setShow: (show: boolean) => void,
-    origin: React.RefObject<HTMLButtonElement | null>
-};
-
-function LeftToolbarPopup({
-    show,
-    setShow,
-    origin
-}: PopupProps) {
-    const nodeRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        function handlePointerDown(event: PointerEvent) {
-            const target = event.target as Node | null;
-
-            if (
-                !nodeRef.current?.contains(target) &&
-                !origin.current?.contains(target)
-            ) {
-                // Close the pop-up
-                setShow(false);
-            }
-        }
-
-        document.addEventListener("pointerdown", handlePointerDown);
-        return () => document.removeEventListener("pointerdown", handlePointerDown);
-    }, []);
-
-    return (
-        <CSSTransition
-            in={show}
-            nodeRef={nodeRef}
-            timeout={300}
-            classNames="toolbar-left-popup"
-            mountOnEnter
-            unmountOnExit
-        >
-            <div className="toolbar-left-popup" ref={nodeRef}>
-                <LeftToolbar />
-            </div>
-        </CSSTransition>
-    );
-}
-
-type RightPopupProps = PopupProps & {
-    signOutUser: () => void
-};
-
-function RightToolbarPopup({
-    show,
-    setShow,
-    origin,
-    signOutUser
-}: RightPopupProps) {
-    const nodeRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        function handlePointerDown(event: PointerEvent) {
-            const target = event.target as Node | null;
-
-            if (
-                !nodeRef.current?.contains(target) &&
-                !origin.current?.contains(target)
-            ) {
-                // Close the pop-up.
-                setShow(false);
-            }
-        }
-
-        document.addEventListener("pointerdown", handlePointerDown);
-        return () => document.removeEventListener("pointerdown", handlePointerDown);
-    }, []);
-
-    const navigate = useNavigate();
-
-    return (
-        <CSSTransition
-            in={show}
-            nodeRef={nodeRef}
-            timeout={300}
-            classNames="toolbar-right-popup"
-            mountOnEnter
-            unmountOnExit
-        >
-            <div className="toolbar-right-popup" ref={nodeRef}>
-                <Tab
-                    text="Sign out"
-                    onClick={() => {
-                        // Sign out.
-                        signOutUser();
-
-                        // Close the pop-up.
-                        setShow(false);
-
-                        // Go back to the main page.
-                        navigate("/");
-                    }}
-                />
-            </div>
-        </CSSTransition>
-    );
-}
-
-function LeftToolbar() {
-    const navigate = useNavigate();
-
-    return (
-        <div className="toolbar-elements">
-            <button className='logo' onClick={() => {
-                navigate("/");
-            }}>
-                <img
-                    src={logo}
-                    alt="Superoxide Logo"
-                />
-            </button>
-            <div className="toolbar-tabs">
-                <Tab
-                    text="Discover"
-                    route="/discover"
-                />
-                <Tab
-                    text="Groups"
-                    route="/groups"
-                />
-            </div>
-        </div>
-    );
-}
-
-type TabProps = {
-    text: string,
-    route?: string,
-    onClick?: () => void
-};
-
-function Tab({
-    text,
-    route,
-    onClick
-}: TabProps) {
-    const navigate = useNavigate();
-
-    const defaultOnClick = () => {
-        if (route)
-            navigate(route);
-    };
-
-    return (
-        <button className='toolbar-tab' onClick={onClick || defaultOnClick}>{text}</button>
     );
 }
 

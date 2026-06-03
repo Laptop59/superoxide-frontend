@@ -95,7 +95,9 @@
 
 .toolbar-left-popup, .toolbar-right-popup {
     --toolbar-axis: column; /* Override the default axis */
-    --animation-duration: 300ms;
+    --enter-animation-duration: 300ms;
+    --exit-animation-duration: 120ms;
+
     position: absolute;
     top: var(--toolbar-height);
 
@@ -131,16 +133,18 @@
 
 .toolbar-left-popup-enter-active {
     transform: translateX(0);
-    transition: transform var(--animation-duration) ease-out;
+    transition: transform var(--enter-animation-duration) ease-out;
 }
 
 .toolbar-left-popup-exit {
     transform: translateX(0);
+    pointer-events: none;
 }
 
 .toolbar-left-popup-exit-active {
     transform: translateX(-100%);
-    transition: transform var(--animation-duration) ease-in;
+    transition: transform var(--exit-animation-duration) ease-in;
+    pointer-events: none;
 }
 
 .toolbar-right-popup-enter {
@@ -149,16 +153,18 @@
 
 .toolbar-right-popup-enter-active {
     transform: translateX(0);
-    transition: transform var(--animation-duration) ease-out;
+    transition: transform var(--enter-animation-duration) ease-out;
 }
 
 .toolbar-right-popup-exit {
     transform: translateX(0);
+    pointer-events: none;
 }
 
 .toolbar-right-popup-exit-active {
     transform: translateX(100%);
-    transition: transform var(--animation-duration) ease-in;
+    transition: transform var(--exit-animation-duration) ease-in;
+    pointer-events: none;
 }
 
 @media (max-width: 768px) {

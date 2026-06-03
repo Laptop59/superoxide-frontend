@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import AuthPage from './pages/auth';
 import Toolbar from './components/toolbar';
 import { useEffect, useState } from 'react';
-import { me, type UserDetails } from './api';
+import { me, signOutAccount, type UserDetails } from './api';
 
 function App() {
     const [user, setUser] = useState<UserDetails | undefined>();
@@ -28,13 +28,20 @@ function App() {
         <>
             <Toolbar
                 user={user}
-                signOutUser={() => alert("TODO")}
+                signOutUser={signOutUser}
             />
             <div className='page'>
                 {!loading && <FrontendRoutes setUser={setUser}/>}
             </div>
         </>
     )
+
+    async function signOutUser() {
+        try {
+            await signOutAccount();
+            setUser(undefined);
+        } catch(e) {}
+    }
 }
 
 type FrontendRoutesProps = {
