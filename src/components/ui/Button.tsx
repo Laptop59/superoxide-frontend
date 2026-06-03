@@ -16,9 +16,9 @@ const Button = forwardRef<
 >(
     ({children, ...props}: Props, ref) => (
         <button
-            className='generic-button'
-            ref={ref}
             {...props}
+            className={'generic-button ' + props.className}
+            ref={ref}
         >
             {children}
         </button>

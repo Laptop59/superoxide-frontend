@@ -46,7 +46,7 @@ function AuthPage({
             <h1>Welcome! We're so excited to see you here!</h1>
             <h3>All you need to do is to get into an account!</h3>
             <div className='auth-box'>
-                <AuthComponent setState={setState} setUser={setUser}/>
+                <AuthComponent setState={setState} setUser={setUser} />
             </div>
         </div>
     );
@@ -94,7 +94,7 @@ function Register({
             </div>
             <div className='auth-inner-box'>
                 <h3>Let's create an account!</h3>
-                <ErrorModal error={error}/>
+                <ErrorModal error={error} />
                 <TextField
                     title="Username"
                     placeholder="user123"
@@ -235,7 +235,7 @@ function Login({
             </div>
             <div className='auth-inner-box'>
                 <h3>Welcome back! Let's sign in your account!</h3>
-                <ErrorModal error={error}/>
+                <ErrorModal error={error} />
                 <TextField
                     title="Username"
                     placeholder="user123"

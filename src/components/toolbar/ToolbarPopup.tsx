@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { createContext, useEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 
 type Props = {
@@ -9,6 +9,12 @@ type Props = {
     children: React.ReactNode
 };
 
+type ToolbarPopupContextType = {
+    close: () => void;
+};
+
+const ToolbarPopupContext = createContext<ToolbarPopupContextType | null>(null);
+
 function ToolbarPopup({
     className,
     show,
@@ -17,6 +23,7 @@ function ToolbarPopup({
     children
 }: Props) {
     const nodeRef = useRef<HTMLDivElement>(null);
+    const close = () => setShow(false);
 
     useEffect(() => {
         function handlePointerDown(event: PointerEvent) {
@@ -27,7 +34,7 @@ function ToolbarPopup({
                 !origin.current?.contains(target)
             ) {
                 // Close the pop-up
-                setShow(false);
+                close();
             }
         }
 
@@ -36,19 +43,24 @@ function ToolbarPopup({
     }, []);
 
     return (
-        <CSSTransition
-            in={show}
-            nodeRef={nodeRef}
-            timeout={300}
-            classNames={className}
-            mountOnEnter
-            unmountOnExit
-        >
-            <div className={className} ref={nodeRef}>
-                {children}
-            </div>
-        </CSSTransition>
+        <ToolbarPopupContext.Provider value={{ close }}>
+            <CSSTransition
+                in={show}
+                nodeRef={nodeRef}
+                timeout={200}
+                classNames={className}
+                mountOnEnter
+                unmountOnExit
+            >
+                <div className={className} ref={nodeRef}>
+                    {children}
+                </div>
+            </CSSTransition>
+        </ToolbarPopupContext.Provider>
     );
 }
 
 export default ToolbarPopup;
+export {
+    ToolbarPopupContext
+};

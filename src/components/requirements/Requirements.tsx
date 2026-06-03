@@ -37,7 +37,7 @@ function Requirement<S>({
                 return <div
                     key={i} className={`requirements-requirement${isSatisfied ? " requirements-satisfied" : ""}`}
                     >
-                    <img src={image}/>
+                    <img src={image} />
                     <span>{requirement.text}</span>
                 </div>;
             })

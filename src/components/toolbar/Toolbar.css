@@ -95,7 +95,7 @@
 
 .toolbar-left-popup, .toolbar-right-popup {
     --toolbar-axis: column; /* Override the default axis */
-    --enter-animation-duration: 300ms;
+    --enter-animation-duration: 200ms;
     --exit-animation-duration: 120ms;
 
     position: absolute;

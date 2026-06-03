@@ -5,6 +5,7 @@ import AuthPage from './pages/auth';
 import Toolbar from './components/toolbar';
 import { useEffect, useState } from 'react';
 import { me, signOutAccount, type UserDetails } from './api';
+import MyTests from './pages/my-tests';
 
 function App() {
     const [user, setUser] = useState<UserDetails | undefined>();
@@ -31,7 +32,7 @@ function App() {
                 signOutUser={signOutUser}
             />
             <div className='page'>
-                {!loading && <FrontendRoutes setUser={setUser}/>}
+                {!loading && <FrontendRoutes setUser={setUser} />}
             </div>
         </>
     )
@@ -53,7 +54,8 @@ function FrontendRoutes({
 }: FrontendRoutesProps) {
     return (
         <Routes>
-            <Route path="/auth" element={ <AuthPage setUser={setUser}/> }/>
+            <Route path="/auth" element={ <AuthPage setUser={setUser} /> } />
+            <Route path="/my-tests" element={ <MyTests /> } />
         </Routes>
     );
 }

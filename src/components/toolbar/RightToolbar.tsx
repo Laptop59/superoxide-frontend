@@ -1,17 +1,20 @@
-import { useNavigate } from "react-router-dom";
-
+import { useContext } from "react";
 import Tab from "./Tab";
+import { ToolbarPopupContext } from "./ToolbarPopup";
 
 type Props = {
-    close?: () => void,
     signOutUser: () => void,
 }
 
-function RightToolbar({ close, signOutUser }: Props) {
-    const navigate = useNavigate();
+function RightToolbar({ signOutUser }: Props) {
+    const popup = useContext(ToolbarPopupContext);
 
     return (
         <div className="toolbar-elements">
+            <Tab
+                text="My Tests"
+                route="/my-tests"
+            />
             <Tab
                 text="Sign out"
                 onClick={() => {
@@ -19,10 +22,7 @@ function RightToolbar({ close, signOutUser }: Props) {
                     signOutUser();
 
                     // Close the pop-up.
-                    close?.();
-
-                    // Go back to the main page.
-                    navigate("/");
+                    popup?.close();
                 }}
             />
         </div>
