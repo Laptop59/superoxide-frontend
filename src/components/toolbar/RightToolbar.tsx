@@ -13,10 +13,12 @@ function RightToolbar({ signOutUser }: Props) {
         <div className="toolbar-elements">
             <Tab
                 text="My Tests"
+                onClick={popup?.close}
                 route="/my-tests"
             />
             <Tab
                 text="Sign out"
+                route="/"
                 onClick={() => {
                     // Sign out.
                     signOutUser();

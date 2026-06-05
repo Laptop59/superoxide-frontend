@@ -8,8 +8,10 @@
 
     .my-tests-content {
         width: calc(min(100vw - 30px, var(--max-width)));
-        background-image: linear-gradient(to right, #211, #322, #211);
+        background-image: linear-gradient(to right, #111, #171717, #111);
         border-radius: 10px;
+
+        border: 1px solid #444;
     }
     
     .my-tests-header {
@@ -24,16 +26,10 @@
             font-size: 20px;
             font-weight: 700;
         }
-
-        .my-tests-new {
-            background-color: green;
-        }
     }
 
     .my-tests-box {
-        width: 100%;
-        padding: 10px 0;
-        background-image: linear-gradient(to right, #ffffff11, #ffffff19, #ffffff11);
+        background: linear-gradient(150deg, #ffffff11, #ffffff14, #ffffff04, #ffffff08);
     }
 }
 
@@ -46,13 +42,15 @@
         flex-flow: row;
 
         padding: 5px 10px;
+        gap: 5px;
     }
+}
 
-    .my-tests-test-entry-separator {
-        background-image: linear-gradient(to right, #cccccc77, #cccccc55, #cccccc33);
-        width: 100%;
-        height: 1px;
-    }
+.my-tests-test-entry-separator {
+    background-image: linear-gradient(to right, #cccccc44, #cccccc3a, #cccccc33);
+    width: 100%;
+    height: 1px;
+    margin: 3px 0;
 }
 
 .my-tests-test-icon {
@@ -66,8 +64,8 @@
     align-self: center;
 
     > svg {
-        width: 64px;
-        height: 64px;
+        width: 48px;
+        height: 48px;
     }
 }
 
@@ -75,19 +73,54 @@
     display: flex;
     flex-flow: column;
     align-items: flex-start;
+    margin: 5px 0;
 
     /* Give this element the rest of the width available */
     flex: 1;
+    
+    gap: 5px;
 
     /* Test title */
     h3 {
         margin: 0;
         font-size: 24px;
     }
+
+    .my-tests-test-info-text {
+        display: flex;
+        flex-flow: row;
+        gap: 5px;
+        align-items: start;
+        width: 100%;
+
+        span {
+            width: calc(100% - 24px);
+            text-align: left;
+        }
+
+        svg {
+            transform: translateY(4px);
+        }
+    }
 }
 
 .my-tests-test-options {
     display: flex;
     flex-flow: column;
-    gap: 5px;
+    align-items: end;
+    align-self: center;
+    gap: 8px;
+    padding: 4px;
+}
+
+.my-tests-new {
+    --hue: 100;
+}
+
+.my-tests-edit {
+    --hue: 200;
+}
+
+.my-tests-delete {
+    --hue: 5;
 }

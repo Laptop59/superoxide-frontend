@@ -11,7 +11,7 @@ const PasswordField = forwardRef<
     Props
 >(
     ({title, ...props}: Props, ref) => {
-        let [showPassword, setShowPassword] = useState<boolean>(false);
+        const [showPassword, setShowPassword] = useState<boolean>(false);
         
         return (
             <div className='password-field'>

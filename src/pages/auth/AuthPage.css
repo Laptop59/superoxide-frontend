@@ -14,7 +14,7 @@
 .auth-box {
     position: relative;
     
-    background-image: linear-gradient(to bottom, #f4f4f4, #e4e4e4);
+    background-image: linear-gradient(150deg, #f4f4f4f4, #e4e4e4e4);
     width: min(550px, calc(100vw - 50px));
     min-height: 510px;
     border-radius: 12px;
@@ -48,6 +48,10 @@
     width: 200px;
 
     gap: 16px;
+
+    button {
+        justify-content: space-around;
+    }
 }
 
 .auth-back {

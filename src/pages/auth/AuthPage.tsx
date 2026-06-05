@@ -30,7 +30,7 @@ type AuthProps = {
 function AuthPage({
     setUser
 }: Props) {
-    let [state, setState] = useState<AuthState>("empty");
+    const [state, setState] = useState<AuthState>("empty");
 
     const AuthComponent = AuthComponents[state];
 
@@ -77,7 +77,7 @@ function Register({
     setState,
     setUser
 }: AuthProps) {
-    let [error, setError] = useState<unknown>(null);
+    const [error, setError] = useState<unknown>(null);
 
     const usernameRef = useRef<HTMLInputElement>(null);
 
@@ -222,7 +222,7 @@ function Login({
     setState,
     setUser
 }: AuthProps) {
-    let [error, setError] = useState<unknown>(null);
+    const [error, setError] = useState<unknown>(null);
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);

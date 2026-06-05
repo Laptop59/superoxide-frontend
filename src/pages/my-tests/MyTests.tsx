@@ -2,6 +2,10 @@ import { Button } from "../../components/ui";
 import "./MyTests.css";
 import TestEntry from "./TestEntry";
 
+import {
+    PiPlusCircleBold
+} from "react-icons/pi";
+
 function MyTests() {
     return (
         <div className="my-tests">
@@ -12,12 +16,16 @@ function MyTests() {
                         <span className="my-tests-header-test-counter">Tests: 3</span>
                     </div>
                     <div>
-                        <Button className="my-tests-new">Create New Test</Button>
+                        <Button className="my-tests-new">
+                            <PiPlusCircleBold size={24}/> Create New Test
+                        </Button>
                     </div>
                 </div>
                 <div className="my-tests-box">
                     <TestEntry />
+                    <div className="my-tests-test-entry-separator"/>
                     <TestEntry />
+                    <div className="my-tests-test-entry-separator"/>
                     <TestEntry />
                 </div>
             </div>

@@ -14,11 +14,11 @@ const Button = forwardRef<
     HTMLButtonElement,
     Props
 >(
-    ({children, ...props}: Props, ref) => (
+    ({children, className, ...props}: Props, ref) => (
         <button
-            {...props}
-            className={'generic-button ' + props.className}
+            className={`generic-button ${className ?? ""}`}
             ref={ref}
+            {...props}
         >
             {children}
         </button>

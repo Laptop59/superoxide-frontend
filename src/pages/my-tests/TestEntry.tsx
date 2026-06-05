@@ -1,6 +1,13 @@
 import TestIcon from "../../assets/test_icon.svg?react";
 import { Button } from "../../components/ui";
 
+import {
+    PiClockClockwiseBold,
+    PiPencilBold,
+    PiQuestionBold,
+    PiTrashBold
+} from "react-icons/pi";
+
 function TestEntry() {
     return (
         <div className="my-tests-test-entry">
@@ -10,14 +17,26 @@ function TestEntry() {
                 </div>
                 <div className="my-tests-test-info">
                     <h3>Test XYZ</h3>
-                    <span>Some info lol</span>
+                    <div className="my-tests-test-info-text">
+                        <PiQuestionBold size={16}/>
+                        <span>Type: Objective</span>
+                    </div>
+                    <div className="my-tests-test-info-text">
+                        <PiClockClockwiseBold size={16}/>
+                        <span>Last Updated: EEEEEEEE</span>
+                    </div>
                 </div>
                 <div className="my-tests-test-options">
-                    <Button>Edit</Button>
-                    <Button>Delete</Button>
+                    <Button className="my-tests-edit">
+                        <PiPencilBold />
+                        Edit
+                    </Button>
+                    <Button className="my-tests-delete">
+                        <PiTrashBold />
+                        Delete
+                    </Button>
                 </div>
             </div>
-            <div className="my-tests-test-entry-separator"/>
         </div>
     );
 }
