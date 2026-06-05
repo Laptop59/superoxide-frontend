@@ -41,23 +41,29 @@ interface UserDetails {
     username: string
 }
 
-async function fetchUsernameAvailability(username: string): Promise<UsernameAvailability> {
-    const response = await fetch(`${API_URL}/accounts/username-availability?username=${encodeURIComponent(username)}`);
+async function makeApiRequest(input: RequestInfo | URL, init?: RequestInit): Promise<unknown> {
+    const response = await fetch(input, init);
 
-    let json: any = "Invalid JSON was sent by the server";
+    let json: unknown = {status: "server_sent_invalid_json"};
     try {
         json = await response.json();
-    } catch(e) {}
+    } catch {
+        // Do nothing
+    }
 
     if (response.ok) {
         return json;
     } else {
         throw new ApiError(response.status, json);
     }
+}
+
+async function fetchUsernameAvailability(username: string): Promise<UsernameAvailability> {
+    return await makeApiRequest(`${API_URL}/accounts/username-availability?username=${encodeURIComponent(username)}`) as UsernameAvailability;
 }
 
 async function registerAccount(username: string, password: string): Promise<UserDetails> {
-    const response = await fetch(`${API_URL}/accounts/register`, {
+    const json = await makeApiRequest(`${API_URL}/accounts/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -66,22 +72,13 @@ async function registerAccount(username: string, password: string): Promise<User
             username,
             password
         })
-    });
+    }) as {user: UserDetails};
 
-    let json: any = "Invalid JSON was sent by the server";
-    try {
-        json = await response.json();
-    } catch(e) {}
-
-    if (response.ok) {
-        return json.user as UserDetails;
-    } else {
-        throw new ApiError(response.status, json);
-    }
+    return json.user as UserDetails;
 }
 
 async function loginAccount(username: string, password: string): Promise<UserDetails> {
-    const response = await fetch(`${API_URL}/accounts/login`, {
+    const json = await makeApiRequest(`${API_URL}/accounts/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -90,49 +87,21 @@ async function loginAccount(username: string, password: string): Promise<UserDet
             username,
             password
         })
-    });
+    }) as {user: UserDetails};
 
-    let json: any = "Invalid JSON was sent by the server";
-    try {
-        json = await response.json();
-    } catch(e) {}
-
-    if (response.ok) {
-        return json.user as UserDetails;
-    } else {
-        throw new ApiError(response.status, json);
-    }
+    return json.user as UserDetails;
 }
 
 async function signOutAccount(): Promise<void> {
-    const response = await fetch(`${API_URL}/accounts/sign-out`, {
+    await makeApiRequest(`${API_URL}/accounts/sign-out`, {
         method: "DELETE"
     });
-
-    let json: any = "Invalid JSON was sent by the server";
-    try {
-        json = await response.json();
-    } catch(e) {}
-
-    if (!response.ok)
-        throw new ApiError(response.status, json);
 }
 
 async function me(): Promise<UserDetails> {
-    const response = await fetch(`${API_URL}/me`, {
+    return await makeApiRequest(`${API_URL}/me`, {
         credentials: "include"
-    });
-
-    let json: any = "Invalid JSON was sent by the server";
-    try {
-        json = await response.json();
-    } catch(e) {}
-
-    if (response.ok) {
-        return json;
-    } else {
-        throw new ApiError(response.status, json);
-    }
+    }) as UserDetails;
 }
 
 export type {

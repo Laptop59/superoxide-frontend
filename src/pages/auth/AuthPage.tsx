@@ -39,7 +39,7 @@ function AuthPage({
         if (state === "done") {
             navigate("/", { replace: true });
         }
-    }, [state]);
+    }, [state, navigate]);
 
     return (
         <div className='auth'>

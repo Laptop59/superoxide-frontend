@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef } from "react";
+import { createContext, useCallback, useEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 
 type Props = {
@@ -23,7 +23,7 @@ function ToolbarPopup({
     children
 }: Props) {
     const nodeRef = useRef<HTMLDivElement>(null);
-    const close = () => setShow(false);
+    const close = useCallback(() => setShow(false), [setShow]);
 
     useEffect(() => {
         function handlePointerDown(event: PointerEvent) {
@@ -40,7 +40,7 @@ function ToolbarPopup({
 
         document.addEventListener("pointerdown", handlePointerDown);
         return () => document.removeEventListener("pointerdown", handlePointerDown);
-    }, []);
+    }, [close, origin]);
 
     return (
         <ToolbarPopupContext.Provider value={{ close }}>

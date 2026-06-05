@@ -23,7 +23,7 @@ function Requirement<S>({
     onRequirementChange
 }:  Props<S>) {
     const satisfied = requirements.every(requirement => requirement.criterion(state));
-    useEffect(() => onRequirementChange(satisfied), [satisfied]);
+    useEffect(() => onRequirementChange(satisfied), [satisfied, onRequirementChange]);
 
     return <div className="requirements">
         {

@@ -41,7 +41,9 @@ function App() {
         try {
             await signOutAccount();
             setUser(undefined);
-        } catch(e) {}
+        } catch {
+            // Ignore on purpose
+        }
     }
 }
 
