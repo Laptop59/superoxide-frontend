@@ -45,7 +45,7 @@ function Toolbar({
                                     M 8 48 H 56
                                 "
                                 stroke="white"
-                                stroke-width="5"
+                                strokeWidth="5"
                             />
                         </svg>
                     </button>

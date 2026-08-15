@@ -16,7 +16,7 @@ const PasswordField = forwardRef<
         return (
             <div className='password-field'>
                 <div className='password-field-header'>
-                    <span>{title}</span>
+                    <span className='field-title'>{title}</span>
                     <div>
                         <span>Show Password</span>
                         <input

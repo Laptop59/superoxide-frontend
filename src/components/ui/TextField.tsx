@@ -15,7 +15,7 @@ const TextField = forwardRef<
         return (
             <div className='text-field'>
                 <div className='text-field-header'>
-                    <span>{title}</span>
+                    <span className='field-title'>{title}</span>
                     {header}
                 </div>
                 

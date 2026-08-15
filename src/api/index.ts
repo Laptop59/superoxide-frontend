@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useState } from "react";
+
 const API_URL = "api";
 
 /// Used for errors usually.
@@ -40,6 +42,20 @@ type UsernameAvailability =
 interface UserDetails {
     username: string
 }
+
+type TestType = 'objective' | 'subjective';
+
+interface MyTestsEntry {
+    id: string,
+    name: string,
+    test_type: TestType,
+    updated_at: string
+}
+
+type FetchState<T> =
+    { status: "loading" } |
+    { status: "fetched", value: T } |
+    { status: "errored", error: Error };
 
 async function makeApiRequest(input: RequestInfo | URL, init?: RequestInit): Promise<unknown> {
     const response = await fetch(input, init);
@@ -104,9 +120,56 @@ async function me(): Promise<UserDetails> {
     }) as UserDetails;
 }
 
+async function myTests(): Promise<MyTestsEntry[]> {
+    const response = await makeApiRequest(`${API_URL}/tests/my-tests`, {
+        credentials: "include"
+    }) as { tests: MyTestsEntry[] };
+
+    return response.tests;
+}
+
+/**
+ * A utility function to simplify giving out requests for a value within a state.
+ * @param request The function called for fetching the value.
+ * @returns The state and function to retry fetching.
+ */
+function useFetchState<T>(request: () => Promise<T>): [FetchState<T>, () => void] {
+    const [state, setState] = useState<FetchState<T>>({ status: "loading" });
+
+    const doFetch = useCallback(() => {
+        request()
+            .then(value => setState({
+                status: "fetched",
+                value
+            }))
+            .catch(error => {
+                console.error("Error occured while fetching:", error);
+                setState({
+                    status: "errored",
+                    error: error instanceof Error ? error : new Error(String(error))
+                })
+            });
+    }, [request]);
+
+    useEffect(() => {
+        doFetch();
+    }, [doFetch]);
+    
+    return [
+        state,
+        useCallback(() => {
+            setState({ status: "loading" });
+            doFetch();
+        }, [doFetch])
+    ];
+}
+
 export type {
     UsernameAvailability,
-    UserDetails
+    UserDetails,
+    TestType,
+    MyTestsEntry,
+    FetchState
 };
 
 export {
@@ -115,5 +178,7 @@ export {
     registerAccount,
     loginAccount,
     signOutAccount,
-    me
+    me,
+    myTests,
+    useFetchState
 };

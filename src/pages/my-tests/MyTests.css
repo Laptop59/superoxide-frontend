@@ -30,6 +30,14 @@
 
     .my-tests-box {
         background: linear-gradient(150deg, #ffffff11, #ffffff14, #ffffff04, #ffffff08);
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        padding: 5px 0;
+
+        h3, p {
+            margin: 10px 0;
+        }
     }
 }
 

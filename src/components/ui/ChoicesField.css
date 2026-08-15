@@ -1,0 +1,75 @@
+@property --gradient-color-1 {
+    syntax: '<color>';
+    initial-value: #252525;
+    inherits: false;
+}
+
+@property --gradient-color-2 {
+    syntax: '<color>';
+    initial-value: #2b2b2b;
+    inherits: false;
+}
+
+.choices-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    text-align: left;
+
+    span {
+        color: #777;
+    }
+
+    .choices-field-choices {
+        display: flex;
+        flex-flow: row;
+        gap: 12px;
+
+        margin: 1px 0;
+
+        .choice {
+            background-image: radial-gradient(var(--gradient-color-1), var(--gradient-color-2));
+
+            padding: 8px;
+            border-radius: 16px;
+            flex: 1; /* Equalize widths. */
+
+            border: 2px solid #111;
+            font-size: 16px;
+
+            height: 44px;
+            margin: 3px 0;
+            
+            span {
+                color: white;
+                text-align: center;
+                flex: 1;
+
+                transition:
+                    color 0.3s ease-out;
+            }
+
+            transition:
+                --gradient-color-1 0.5s ease-in-out,
+                --gradient-color-2 0.5s ease-in-out,
+        }
+
+        .choice.selected {
+            --gradient-color-1: #d0d0d0;
+            --gradient-color-2: #b5b5b5;
+
+            border: 2px solid #777;
+            span {
+                color: #111;
+            }
+        }
+    }
+
+    .choices-field-header {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        margin: 1px 0;
+    }
+}
