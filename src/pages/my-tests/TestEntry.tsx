@@ -1,3 +1,4 @@
+import type { TestType } from "../../api";
 import TestIcon from "../../assets/test_icon.svg?react";
 import { Button } from "../../components/ui";
 
@@ -8,7 +9,18 @@ import {
     PiTrashBold
 } from "react-icons/pi";
 
-function TestEntry() {
+type Props = {
+    id: string
+    name: string,
+    type: TestType,
+    updatedAt: string
+};
+
+function TestEntry({
+    name,
+    type,
+    updatedAt
+}: Props) {
     return (
         <div className="my-tests-test-entry">
             <div className="my-tests-test-entry-content">
@@ -16,14 +28,14 @@ function TestEntry() {
                     <TestIcon />
                 </div>
                 <div className="my-tests-test-info">
-                    <h3>Test XYZ</h3>
+                    <h3>{name}</h3>
                     <div className="my-tests-test-info-text">
                         <PiQuestionBold size={16}/>
-                        <span>Type: Objective</span>
+                        <span>Type: {type}</span>
                     </div>
                     <div className="my-tests-test-info-text">
                         <PiClockClockwiseBold size={16}/>
-                        <span>Last Updated: EEEEEEEE</span>
+                        <span>Last Updated: {updatedAt}</span>
                     </div>
                 </div>
                 <div className="my-tests-test-options">

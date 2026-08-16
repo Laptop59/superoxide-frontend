@@ -48,7 +48,7 @@ type TestType = 'objective' | 'subjective';
 interface MyTestsEntry {
     id: string,
     name: string,
-    test_type: TestType,
+    type: TestType,
     updated_at: string
 }
 
@@ -56,6 +56,8 @@ type FetchState<T> =
     { status: "loading" } |
     { status: "fetched", value: T } |
     { status: "errored", error: Error };
+
+type CreateTestResponse = { id: string };
 
 async function makeApiRequest(input: RequestInfo | URL, init?: RequestInit): Promise<unknown> {
     const response = await fetch(input, init);
@@ -128,6 +130,20 @@ async function myTests(): Promise<MyTestsEntry[]> {
     return response.tests;
 }
 
+async function createTest(name: string, type: string): Promise<CreateTestResponse> {
+    return await makeApiRequest(`${API_URL}/tests/create`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name,
+            type
+        })
+    }) as CreateTestResponse;
+}
+
 /**
  * A utility function to simplify giving out requests for a value within a state.
  * @param request The function called for fetching the value.
@@ -180,5 +196,6 @@ export {
     signOutAccount,
     me,
     myTests,
-    useFetchState
+    useFetchState,
+    createTest
 };

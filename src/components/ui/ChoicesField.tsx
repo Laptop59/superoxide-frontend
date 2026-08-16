@@ -10,9 +10,10 @@ type Props<K> = React.InputHTMLAttributes<HTMLDivElement> & {
     header?: React.ReactNode,
     title: string,
     choices: Choice<K>[],
+    disabled: boolean,
 
-    selected?: K,
-    setSelected: (id: K) => void
+    selected?: K | null,
+    setSelected: (id: K | null) => void
 };
 
 function Choices<K extends React.Key>({
@@ -21,8 +22,9 @@ function Choices<K extends React.Key>({
     choices,
     selected,
     setSelected,
+    disabled,
     ...props
-}: Props<K>) {
+}: Props<K | null>) {
     return (
         <div className='choices-field'>
             <div className='choices-field-header'>
@@ -39,7 +41,8 @@ function Choices<K extends React.Key>({
                         <Button
                             className={"choice" + (selected === choice.id ? " selected" : "")}
                             key={choice.id}
-                            onClick={() => setSelected(choice.id)}
+                            onClick={() => selected === choice.id ? setSelected(null) : setSelected(choice.id)}
+                            disabled={disabled}
                         >
                             <span>{choice.name}</span>
                         </Button>

@@ -6,8 +6,8 @@ import "./MyTests.css";
 import {
     PiPlusCircleBold
 } from "react-icons/pi";
-import { myTests, useFetchState, type FetchState, type MyTestsEntry } from "../../api";
-import TestEntry from "./TestEntry";
+import { myTests, useFetchState } from "../../api";
+import TestBox from "./TestBox";
 
 function MyTests() {
     const [isCreateNewTestOpen, setIsCreateNewTestOpen] = useState(false);
@@ -32,9 +32,10 @@ function MyTests() {
                         </Button>
                     </div>
                 </div>
-                {
-                    createTestsBox(userTests, retryUserTests)
-                }
+                <TestBox
+                    userTests={userTests}
+                    retryUserTests={retryUserTests}
+                />
             </div>
             <CreateNewTestModal
                 isOpen={isCreateNewTestOpen}
@@ -42,60 +43,6 @@ function MyTests() {
             />
         </div>
     )
-}
-
-function createTestsBox(
-    userTests: FetchState<MyTestsEntry[]>,
-    retryUserTests: () => void
-) {
-    switch (userTests.status) {
-        case "loading":
-            return (
-                <div className="my-tests-box">
-                    <h3>Loading your tests...</h3>
-                </div>
-            );
-
-        case "fetched": {
-            const {value} = userTests;
-
-            if (value.length == 0) {
-                return (
-                <div className="my-tests-box">
-                    <h3>No tests found.</h3>
-                    <p>When you create tests, they will be shown here.</p>
-                </div>
-            );
-            }
-
-            const elements = [];
-
-            for (let i = 0; i < value.length; i++) {
-                elements.push(
-                    <TestEntry key={i}/>
-                );
-                if (i + 1 != value.length) {
-                    elements.push(
-                        <div className="my-tests-test-entry-separator"/>
-                    );
-                }
-            }
-
-            return (
-                <div className="my-tests-box">
-                    {elements}
-                </div>
-            );
-        }
-
-        case "errored":
-            return (
-                <div className="my-tests-box">
-                    <h3>Could not load your tests.</h3>
-                    <Button onClick={retryUserTests}>Retry</Button>
-                </div>
-            );
-    }
 }
 
 export default MyTests;

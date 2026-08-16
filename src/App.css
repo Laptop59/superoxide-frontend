@@ -1,3 +1,15 @@
 body {
     background-color: black;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.page {
+    --page-padding: 24px;
+
+    flex: 1;
+    padding: var(--page-padding) var(--page-padding);
+
+    overflow-y: auto;
+    scrollbar-color: white;
 }
