@@ -1,5 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
-
 const API_URL = "api";
 
 /// Used for errors usually.
@@ -8,7 +6,7 @@ const ERRORED_STATUS_MAP: Record<string, string> = {
     invalid_username: "The provided username is invalid.",
     too_many_requests: "Please wait a moment before trying again.",
     incorrect_username_or_password: "Incorrect username or password.",
-    not_found: "The resource requested was not found.",
+    not_found: "The requested resource was not found.",
     unauthorized: "You are not authorized to perform this action.",
 };
 
@@ -51,11 +49,6 @@ interface MyTestsEntry {
     type: TestType,
     updated_at: string
 }
-
-type FetchState<T> =
-    { status: "loading" } |
-    { status: "fetched", value: T } |
-    { status: "errored", error: Error };
 
 type CreateTestResponse = { id: string };
 
@@ -144,48 +137,22 @@ async function createTest(name: string, type: string): Promise<CreateTestRespons
     }) as CreateTestResponse;
 }
 
-/**
- * A utility function to simplify giving out requests for a value within a state.
- * @param request The function called for fetching the value.
- * @returns The state and function to retry fetching.
- */
-function useFetchState<T>(request: () => Promise<T>): [FetchState<T>, () => void] {
-    const [state, setState] = useState<FetchState<T>>({ status: "loading" });
-
-    const doFetch = useCallback(() => {
-        request()
-            .then(value => setState({
-                status: "fetched",
-                value
-            }))
-            .catch(error => {
-                console.error("Error occured while fetching:", error);
-                setState({
-                    status: "errored",
-                    error: error instanceof Error ? error : new Error(String(error))
-                })
-            });
-    }, [request]);
-
-    useEffect(() => {
-        doFetch();
-    }, [doFetch]);
-    
-    return [
-        state,
-        useCallback(() => {
-            setState({ status: "loading" });
-            doFetch();
-        }, [doFetch])
-    ];
+async function deleteTest(id: string): Promise<void> {
+    await makeApiRequest(`${API_URL}/tests/delete`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({  id })
+    });
 }
 
 export type {
     UsernameAvailability,
     UserDetails,
     TestType,
-    MyTestsEntry,
-    FetchState
+    MyTestsEntry
 };
 
 export {
@@ -196,6 +163,6 @@ export {
     signOutAccount,
     me,
     myTests,
-    useFetchState,
-    createTest
+    createTest,
+    deleteTest
 };

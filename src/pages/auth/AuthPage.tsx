@@ -4,14 +4,11 @@ import './AuthPage.css';
 import Button from '../../components/ui/Button';
 import { PasswordField } from '../../components/ui';
 import TextField from '../../components/ui/TextField';
-import { fetchUsernameAvailability, loginAccount, registerAccount, type UserDetails, type UsernameAvailability } from '../../api';
+import { fetchUsernameAvailability, loginAccount, registerAccount, type UsernameAvailability } from '../../api';
 import Requirements from '../../components/requirements';
 import ErrorModal from '../../components/ui/ErrorModal';
 import { useNavigate } from 'react-router-dom';
-
-type Props = {
-    setUser: (user: UserDetails | undefined) => void
-};
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const AuthComponents = {
     empty: Empty,
@@ -24,14 +21,10 @@ type AuthState = keyof typeof AuthComponents;
 
 type AuthProps = {
     setState: (state: AuthState) => void
-    setUser: (user: UserDetails | undefined) => void
 };
 
-function AuthPage({
-    setUser
-}: Props) {
+function AuthPage() {
     const [state, setState] = useState<AuthState>("empty");
-
     const AuthComponent = AuthComponents[state];
 
     const navigate = useNavigate();
@@ -46,7 +39,7 @@ function AuthPage({
             <h1>Welcome! We're so excited to see you here!</h1>
             <h3>All you need to do is to get into an account!</h3>
             <div className='auth-box'>
-                <AuthComponent setState={setState} setUser={setUser} />
+                <AuthComponent setState={setState} />
             </div>
         </div>
     );
@@ -73,9 +66,13 @@ function Done() {
     );
 }
 
+interface UsernamePassword {
+    username: string,
+    password: string
+}
+
 function Register({
-    setState,
-    setUser
+    setState
 }: AuthProps) {
     const [error, setError] = useState<unknown>(null);
 
@@ -86,6 +83,18 @@ function Register({
     const [password, setPassword] = useState<string>("");
     const [passwordAllowed, setPasswordAllowed] = useState<boolean>(false);
     const [submitting, setSubmitting] = useState<boolean>(false);
+
+    const queryClient = useQueryClient();
+
+    const registerMutation = useMutation({
+        mutationFn: ({username, password}: UsernamePassword) => registerAccount(username, password),
+        onSuccess: async data => {
+            queryClient.setQueryData(
+                ["me"],
+                data
+            );
+        }
+    });
 
     return (
         <>
@@ -170,7 +179,7 @@ function Register({
             throw Error("Your password must satisfy all the given requirements for it.");
         }
 
-        setUser(await registerAccount(username, password));
+        await registerMutation.mutateAsync({username, password});
         setState("done");
     }
 
@@ -219,14 +228,25 @@ function Register({
 }
 
 function Login({
-    setState,
-    setUser
+    setState
 }: AuthProps) {
+    const queryClient = useQueryClient();
+
     const [error, setError] = useState<unknown>(null);
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [submitting, setSubmitting] = useState<boolean>(false);
+
+    const loginMutation = useMutation({
+        mutationFn: ({username, password}: UsernamePassword) => loginAccount(username, password),
+        onSuccess: async data => {
+            queryClient.setQueryData(
+                ["me"],
+                data
+            );
+        }
+    });
     
     return (
         <>
@@ -278,7 +298,7 @@ function Login({
             throw Error("Please enter a password.");
         }
 
-        setUser(await loginAccount(username, password));
+        await loginMutation.mutateAsync({username, password});
         setState("done");
     }
 }

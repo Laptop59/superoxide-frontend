@@ -1,55 +1,57 @@
-import type { FetchState, MyTestsEntry } from "../../api"
+import type { UseQueryResult } from "@tanstack/react-query";
+import type { MyTestsEntry } from "../../api"
 import { Button } from "../../components/ui";
 import TestEntry from "./TestEntry";
 
 type Props = {
-    userTests: FetchState<MyTestsEntry[]>,
-    retryUserTests: () => void
+    userTests: UseQueryResult<NoInfer<MyTestsEntry[]>, Error>,
+    retryUserTests: () => void,
+    deleteTest: (id: string, name: string) => void
 };
 
 function TestBox({
     userTests,
-    retryUserTests
+    retryUserTests,
+    deleteTest
 }: Props) {
     switch (userTests.status) {
-        case "loading":
+        case "pending":
             return (
                 <div className="my-tests-box">
                     <h3>Loading your tests...</h3>
                 </div>
             );
 
-        case "fetched": {
-            const {value} = userTests;
+        case "success": {
+            const {data} = userTests;
 
-            if (value.length == 0) {
+            if (data.length == 0) {
                 return (
-                <div className="my-tests-box">
-                    <h3>No tests found.</h3>
-                    <p>When you create tests, they will be shown here.</p>
-                </div>
-            );
+                    <div className="my-tests-box">
+                        <h3>No tests found.</h3>
+                        <p>When you create tests, they will be shown here.</p>
+                    </div>
+                );
             }
 
             const elements = [];
 
-            for (let i = 0; i < value.length; i++) {
-                const test = value[i];
+            elements.push(<TestEntrySeparator key={0}/>);
+            for (const test of data) {
                 elements.push(
                     <TestEntry
                         id={test.id}
-                        key={test.id}
+                        key={test.id + "-entry"}
                         name={test.name}
                         type={test.type}
                         updatedAt={test.updated_at}
+                        deleteTest={deleteTest}
                     />
                 );
-                if (i + 1 != value.length) {
-                    elements.push(
-                        <div className="my-tests-test-entry-separator"/>
-                    );
-                }
+                elements.push(<TestEntrySeparator key={test.id + "-separator"}/>);
             }
+
+            elements.pop(); // Delete the last separator.
 
             return (
                 <div className="my-tests-box">
@@ -58,7 +60,7 @@ function TestBox({
             );
         }
 
-        case "errored":
+        case "error":
             return (
                 <div className="my-tests-box">
                     <h3>Could not load your tests.</h3>
@@ -66,6 +68,10 @@ function TestBox({
                 </div>
             );
     }
+}
+
+function TestEntrySeparator() {
+    return <div className="my-tests-test-entry-separator"/>;
 }
 
 export default TestBox;

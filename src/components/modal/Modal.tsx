@@ -8,7 +8,7 @@ import { PiXBold } from "react-icons/pi";
 type Props = {
     children: React.ReactNode,
     isOpen: boolean,
-    setIsOpen: (isOpen: boolean) => void
+    close: () => void,
     className?: string,
     title: string
 };
@@ -16,14 +16,14 @@ type Props = {
 function Modal({
     children,
     isOpen,
-    setIsOpen,
+    close,
     className = "",
     title
 }: Props) {
     return (
         <ReactModal
             isOpen={isOpen}
-            onRequestClose={() => setIsOpen(false)}
+            onRequestClose={() => close()}
             className={className + " modal"}
             style={{
                 overlay: {
@@ -36,7 +36,7 @@ function Modal({
                     <h1>{title}</h1>
                     <button
                         className="modal-close"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => close()}
                     >
                         <PiXBold size={24} />
                     </button>

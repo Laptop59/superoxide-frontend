@@ -8,12 +8,12 @@ import ErrorModal from "../../components/ui/ErrorModal";
 
 type Props = {
     isOpen: boolean,
-    setIsOpen: (isOpen: boolean) => void
+    close: () => void
 };
 
 function CreateNewTestModal({
     isOpen,
-    setIsOpen
+    close
 }: Props) {
     const [selectedTestType, setSelectedTestType] = useState<TestType | null>(null);
     const [testName, setTestName] = useState<string>("");
@@ -42,7 +42,7 @@ function CreateNewTestModal({
     return (
         <Modal
             isOpen={isOpen}
-            setIsOpen={setIsOpen}
+            close={close}
             className="create-new-test-modal"
             title="Create New Test"
         >

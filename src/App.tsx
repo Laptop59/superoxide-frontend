@@ -3,61 +3,54 @@ import { Routes, Route } from "react-router-dom";
 
 import AuthPage from './pages/auth';
 import Toolbar from './components/toolbar';
-import { useEffect, useState } from 'react';
 import { me, signOutAccount, type UserDetails } from './api';
 import MyTests from './pages/my-tests';
+import { QueryClient, QueryClientProvider, useMutation, useQuery } from '@tanstack/react-query';
+import EditTest from './pages/edit-test/';
 
 function App() {
-    const [user, setUser] = useState<UserDetails | undefined>();
-    const [loading, setLoading] = useState<boolean>(true);
+    const queryClient = new QueryClient();
 
-    useEffect(() => {
-        async function fetch() {
-            try {
-                setUser(await me());
-            } catch(e) {
-                console.error("Could not fetch user details:", e);
-            } finally {
-                setLoading(false);
-            }
+    const user = useQuery({
+        queryKey: ["me"],
+        queryFn: me
+    }, queryClient);
+
+    const loading = user.isPending;
+
+    const signOutMutation = useMutation({
+        mutationFn: signOutAccount,
+        onSuccess: async () => {
+            queryClient.setQueryData<UserDetails>(
+                ["me"],
+                undefined
+            );
         }
-
-        fetch();
-    }, []);
+    }, queryClient);
 
     return (
-        <>
+        <QueryClientProvider client={queryClient}>
             <Toolbar
-                user={user}
+                user={user.data}
                 signOutUser={signOutUser}
             />
             <div className='page'>
-                {!loading && <FrontendRoutes setUser={setUser} />}
+                {!loading && <FrontendRoutes />}
             </div>
-        </>
+        </QueryClientProvider>
     )
 
     async function signOutUser() {
-        try {
-            await signOutAccount();
-            setUser(undefined);
-        } catch {
-            // Ignore on purpose
-        }
+        signOutMutation.mutate();
     }
 }
 
-type FrontendRoutesProps = {
-    setUser: (user: UserDetails | undefined) => void
-};
-
-function FrontendRoutes({
-    setUser
-}: FrontendRoutesProps) {
+function FrontendRoutes() {
     return (
         <Routes>
-            <Route path="/auth" element={ <AuthPage setUser={setUser} /> } />
+            <Route path="/auth" element={ <AuthPage /> } />
             <Route path="/my-tests" element={ <MyTests /> } />
+            <Route path="/edit-test/:testId" element={ <EditTest /> } />
         </Routes>
     );
 }

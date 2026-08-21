@@ -13,13 +13,16 @@ type Props = {
     id: string
     name: string,
     type: TestType,
-    updatedAt: string
+    updatedAt: string,
+    deleteTest: (id: string, name: string) => void,
 };
 
 function TestEntry({
+    id,
     name,
     type,
-    updatedAt
+    updatedAt,
+    deleteTest
 }: Props) {
     return (
         <div className="my-tests-test-entry">
@@ -43,7 +46,7 @@ function TestEntry({
                         <PiPencilBold />
                         Edit
                     </Button>
-                    <Button className="my-tests-delete">
+                    <Button className="my-tests-delete" onClick={() => deleteTest(id, name)}>
                         <PiTrashBold />
                         Delete
                     </Button>

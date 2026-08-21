@@ -6,12 +6,24 @@ import "./MyTests.css";
 import {
     PiPlusCircleBold
 } from "react-icons/pi";
-import { myTests, useFetchState } from "../../api";
+import { myTests } from "../../api";
 import TestBox from "./TestBox";
+import DeleteTestModal from "./DeleteTestModal";
+import { useQuery } from "@tanstack/react-query";
+
+type DeletingTestInfo = {
+    id: string,
+    name: string
+};
 
 function MyTests() {
     const [isCreateNewTestOpen, setIsCreateNewTestOpen] = useState(false);
-    const [userTests, retryUserTests] = useFetchState(myTests);
+    const [deleteTestInfo, setDeleteTestInfo] = useState<DeletingTestInfo | null>(null);
+    
+    const userTests = useQuery({
+        queryKey: ["my-tests"],
+        queryFn: myTests
+    });
 
     return (
         <div className="my-tests">
@@ -20,7 +32,7 @@ function MyTests() {
                 <div className="my-tests-header">
                     <div>
                         <span className="my-tests-header-test-counter">
-                            {userTests.status == "fetched" ? `Tests: ${userTests.value.length}` : "Tests"}
+                            {userTests.isSuccess ? `Tests: ${userTests.data.length}` : "Tests"}
                         </span>
                     </div>
                     <div>
@@ -34,13 +46,23 @@ function MyTests() {
                 </div>
                 <TestBox
                     userTests={userTests}
-                    retryUserTests={retryUserTests}
+                    retryUserTests={userTests.refetch}
+                    deleteTest={(id, name) => setDeleteTestInfo({id, name})}
                 />
             </div>
             <CreateNewTestModal
                 isOpen={isCreateNewTestOpen}
-                setIsOpen={setIsCreateNewTestOpen}
+                close={() => setIsCreateNewTestOpen(false)}
             />
+            {deleteTestInfo !== null && <DeleteTestModal
+                isOpen
+                close={() => setDeleteTestInfo(null)}
+                testId={deleteTestInfo.id}
+                testName={deleteTestInfo.name}
+                onSuccessfulTestDeletion={() => {
+                    setDeleteTestInfo(null); // Close modal
+                }}
+            />}
         </div>
     )
 }
